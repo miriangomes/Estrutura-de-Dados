@@ -6,7 +6,7 @@ typedef struct No {
     void *byte;
     void *frequencia;
     struct No *esquerda, *direita, *proximo;
-} No; // No é um atalho para não precisar escrever a estrutura toda sempre
+} No; 
 
 No *criar_no(unsigned char caracter, long long frequencia, No *esquerda, No *direita) {
     No *novo_no = malloc(sizeof(No));
@@ -20,12 +20,12 @@ No *criar_no(unsigned char caracter, long long frequencia, No *esquerda, No *dir
     return novo_no;
 }
 
-unsigned char get_byte(No *no) { return *(unsigned char *)no->byte; } // consulta e devolve
+unsigned char get_byte(No *no) { return *(unsigned char *)no->byte; } 
 long long get_freq(No *no) { return *(long long *)no->frequencia; }
 int eh_folha(No *no) { return no->esquerda == NULL && no->direita == NULL; }
 
-int is_bit_i_set(unsigned char caracter, int posicao) { return caracter & (1 << posicao); } // checa e diz se é 0 ou 1 
-unsigned char set_bit(unsigned char caracter, int posicao) { return caracter | (1 << posicao); } // força o lado a virar 1
+int is_bit_i_set(unsigned char caracter, int posicao) { return caracter & (1 << posicao); } 
+unsigned char set_bit(unsigned char caracter, int posicao) { return caracter | (1 << posicao); } 
 
 void inserir(No **fila, No *novo) {
     if (*fila == NULL || get_freq(novo) <= get_freq(*fila)) {
@@ -40,7 +40,7 @@ void inserir(No **fila, No *novo) {
     atual->proximo = novo;
 }
 
-No *remover(No **fila) { //arranca do primeiro, move p o segundo, segundo vira o primeiro e depois desconecta o nó removiddo e devolve o nó retirado
+No *remover(No **fila) { 
     No *no = *fila;
     *fila = no->proximo;
     no->proximo = NULL;
@@ -105,7 +105,7 @@ void escrever_arvore(No *no, FILE *arquivo) {
 
 No *ler_arvore(FILE *arquivo, int *restantes) {
     if (*restantes <= 0) return NULL;
-    int caracter_lido = fgetc(arquivo); // retira e armazena
+    int caracter_lido = fgetc(arquivo);
     (*restantes)--;
 
     if (caracter_lido == '*') {
@@ -137,17 +137,17 @@ void compactar(const char *nome_entrada, const char *nome_saida) {
     gerar_codigos(raiz, codigos, caminho, 0);
 
     long long total_bits = 0;
-    for (int i = 0; i < 256; i++) total_bits += freq[i] * strlen(codigos[i]); //qts vezes o caracter apareceu no arquivo original - multiplicação
-    int lixo = (8 - total_bits % 8) % 8; //repetição do % trata casos perfeitos
+    for (int i = 0; i < 256; i++) total_bits += freq[i] * strlen(codigos[i]); 
+    int lixo = (8 - total_bits % 8) % 8;
     int tam_arvore = tamanho_arvore(raiz);
 
     FILE *saida = fopen(nome_saida, "wb");
-    fputc((lixo << 5) | (tam_arvore >> 8), saida); // bits em cima e bits em baixo
-    fputc(tam_arvore & 0xFF, saida); //8 bits ligaado - 11111111
+    fputc((lixo << 5) | (tam_arvore >> 8), saida); 
+    fputc(tam_arvore & 0xFF, saida); 
     escrever_arvore(raiz, saida);
 
     rewind(entrada);
-    unsigned char atual = 0; //acumulador
+    unsigned char atual = 0;
     int pos = 7;
     while ((caracter_lido = fgetc(entrada)) != EOF) {
         for (char *p = codigos[caracter_lido]; *p != '\0'; p++) {
@@ -161,7 +161,7 @@ void compactar(const char *nome_entrada, const char *nome_saida) {
         }
     }
 
-    if (pos != 7) fputc(atual, saida); // sobraram bits pendentes
+    if (pos != 7) fputc(atual, saida); 
 
     liberar(raiz);
     fclose(entrada);
@@ -176,17 +176,17 @@ void descompactar(const char *nome_huff, const char *nome_saida) {
         return;
     }
 
-    int byte1 = fgetc(entrada), byte2 = fgetc(entrada); //bits em cima e bits em baixo
+    int byte1 = fgetc(entrada), byte2 = fgetc(entrada); 
     if (byte1 == EOF || byte2 == EOF) {
         printf("Arquivo .huff invalido!\n");
         fclose(entrada);
         return;
     }
 
-    int lixo = byte1 >> 5; //recupera os 3 bits
-    int tam_arvore = ((byte1 & 0x1F) << 8) | byte2; //encaixa os 8 bits baixos restantes
+    int lixo = byte1 >> 5;
+    int tam_arvore = ((byte1 & 0x1F) << 8) | byte2; 
 
-    No *raiz = ler_arvore(entrada, &tam_arvore); //reconstruir
+    No *raiz = ler_arvore(entrada, &tam_arvore); 
     FILE *saida = fopen(nome_saida, "wb");
 
     No *atual = raiz;
@@ -225,7 +225,6 @@ void descompactar(const char *nome_huff, const char *nome_saida) {
 }
 
 int main(int argc, char *argv[]) {
-    // Execução direta por linha de comando (CLI)
     if (argc == 4) {
         if (strcmp(argv[1], "-c") == 0) {
             compactar(argv[2], argv[3]);
@@ -235,7 +234,6 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // Menu interativo (caso não passe os 4 argumentos)
     int opcao;
     char origem[256];
     char destino[256];

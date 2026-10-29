@@ -130,8 +130,9 @@ void kruskal(Grafo* g) {
     for (i = 0; i < e; i++) {
         printf("Aresta (%d -- %d) -> Peso: %d\n", resultado[i].origem, resultado[i].destino, resultado[i].peso);
         custo_total += resultado[i].peso;
+
     }
-    printf("Custo Total: %d\n", custo_total);
+    printf("Custo Total: %d\n", custo_total);  // adicionado na apresentação
 
     free(uf->pai);
     free(uf->rank);
